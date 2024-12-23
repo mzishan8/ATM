@@ -12,10 +12,6 @@ public class AuthenticationService {
     }
 
     public Customer login(String name) {
-        if (loggedInCustomer != null) {
-            System.out.println("Error: A user is already logged in.");
-            return null;
-        }
         loggedInCustomer = customerRepository.findOrCreate(name);
         System.out.println("Hello, " + name + "!");
         return loggedInCustomer;

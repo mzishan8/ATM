@@ -18,8 +18,6 @@ public class Customer extends User{
 
     public void deposit(double amount) {
         balance += amount;
-        this.debtsOwedTo = new HashMap<>();
-        this.debtsOwedBy = new HashMap<>();
     }
 
     public boolean withdraw(double amount) {

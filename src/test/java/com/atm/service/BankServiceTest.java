@@ -5,6 +5,8 @@ import com.atm.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,9 +45,37 @@ class BankServiceTest {
 
         bankService.deposit(100.0);
 
-        verify(authService, times(1)).getLoggedInCustomer();
+        verify(authService, times(2)).getLoggedInCustomer();
         verify(loggedInCustomer, times(1)).deposit(100.0);
         verify(loggedInCustomer, times(1)).getBalance();
+    }
+
+    @Test
+    void shouldBeAbleToManageDebtsWhenDeposit(){
+        Customer creditor  = mock(Customer.class);
+        double owedAmount = 50.0;
+        when(authService.getLoggedInCustomer()).thenReturn(loggedInCustomer);
+        when(loggedInCustomer.getName()).thenReturn("ABC");
+        when(creditor.getName()).thenReturn("Bob");
+        when(loggedInCustomer.getBalance()).thenReturn(200.0);
+        when(loggedInCustomer.getDebtsOwedTo()).thenReturn(Map.of("Bob", owedAmount));
+        when(customerRepository.find("Bob")).thenReturn(creditor);
+        doNothing().when(loggedInCustomer).repayDebt("Bob", owedAmount);
+        doNothing().when(creditor).deposit(owedAmount);
+        doNothing().when(loggedInCustomer).deposit(50.0);
+        doNothing().when(creditor).settleDebt("ABC",owedAmount);
+
+        bankService.deposit(100.0);
+
+        verify(authService, times(2)).getLoggedInCustomer();
+        verify(loggedInCustomer, times(1)).deposit(50.0);
+        verify(loggedInCustomer, times(1)).getBalance();
+        verify(loggedInCustomer, times(2)).getDebtsOwedTo();
+        verify(customerRepository).find("Bob");
+        verify(loggedInCustomer).repayDebt("Bob", owedAmount);
+        verify(creditor).deposit(owedAmount);
+        verify(loggedInCustomer).deposit(50.0);
+        verify(creditor).settleDebt("ABC", owedAmount);
     }
 
     @Test
@@ -67,7 +97,7 @@ class BankServiceTest {
 
         bankService.transfer(targetName, 100.0);
 
-        verify(authService, times(1)).getLoggedInCustomer();
+        verify(authService, times(2)).getLoggedInCustomer();
         verify(customerRepository, times(1)).findOrCreate(targetName);
         verify(loggedInCustomer, times(1)).withdraw(100.0);
         verify(targetCustomer, times(1)).deposit(100.0);

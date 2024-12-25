@@ -45,7 +45,7 @@ class BankServiceTest {
 
         bankService.deposit(100.0);
 
-        verify(authService, times(2)).getLoggedInCustomer();
+        verify(authService, times(1)).getLoggedInCustomer();
         verify(loggedInCustomer, times(1)).deposit(100.0);
         verify(loggedInCustomer, times(1)).getBalance();
     }
@@ -67,7 +67,7 @@ class BankServiceTest {
 
         bankService.deposit(100.0);
 
-        verify(authService, times(2)).getLoggedInCustomer();
+        verify(authService, times(1)).getLoggedInCustomer();
         verify(loggedInCustomer, times(1)).deposit(50.0);
         verify(loggedInCustomer, times(1)).getBalance();
         verify(loggedInCustomer, times(2)).getDebtsOwedTo();
@@ -97,7 +97,7 @@ class BankServiceTest {
 
         bankService.transfer(targetName, 100.0);
 
-        verify(authService, times(2)).getLoggedInCustomer();
+        verify(authService, times(1)).getLoggedInCustomer();
         verify(customerRepository, times(1)).findOrCreate(targetName);
         verify(loggedInCustomer, times(1)).withdraw(100.0);
         verify(targetCustomer, times(1)).deposit(100.0);

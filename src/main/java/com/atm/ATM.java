@@ -22,9 +22,7 @@ public class ATM {
             switch (command) {
                 case "login":
                     authenticationService.login(parts[1]);
-                    bankService.printAvailableBalance();
-                    bankService.printDeptOwedFrom();
-                    bankService.printDeptOwedTo();
+                    bankService.printAccountSummary(authenticationService.getLoggedInCustomer());
                     break;
                 case "deposit":
                     bankService.deposit(Double.parseDouble(parts[1]));

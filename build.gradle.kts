@@ -18,3 +18,11 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.jar {
+    manifest {
+        attributes (
+            "Main-Class" to  "com.atm.ATM"
+        )
+    }
+}
